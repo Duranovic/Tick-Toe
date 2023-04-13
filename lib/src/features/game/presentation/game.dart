@@ -8,12 +8,9 @@ class Game extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-              onPressed: () => context.go('/'), child: const Text("Go to home"))
-        ],
+      child: ElevatedButton(
+        onPressed: () => {context.go('/')},
+        child: const Text('Play Game'),
       ),
     );
   }
