@@ -14,7 +14,8 @@ class SelectDifficulty extends StatelessWidget {
           Container(
             margin: const EdgeInsets.all(40),
             child: const Text(
-              "Please select a mode you want to play",
+              "Please select a difficulty mode you want to play!",
+              textAlign: TextAlign.center,
               style: TextStyle(
                   decoration: TextDecoration.none,
                   fontSize: 14,
@@ -24,7 +25,7 @@ class SelectDifficulty extends StatelessWidget {
           ),
           Container(
             alignment: Alignment.center,
-            margin: const EdgeInsets.only(top: 90),
+            margin: const EdgeInsets.only(top: 120),
             child: Column(
               children: [
                 FractionallySizedBox(
