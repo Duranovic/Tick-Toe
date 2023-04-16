@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/timer_loading_bar.dart';
 
 class Game extends StatelessWidget {
   const Game({Key? key}) : super(key: key);
@@ -11,15 +12,15 @@ class Game extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Flexible(
-            flex: 2,
+            flex: 3,
             child: FractionallySizedBox(
               widthFactor: 0.9,
               child: Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 30),
+                margin: const EdgeInsets.only(top: 20),
                 padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
                       color: const Color.fromARGB(255, 225, 225, 225)
@@ -30,68 +31,90 @@ class Game extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Row(children: [
-                  Expanded(
-                    child: Column(children: const [
-                      Icon(
-                        Icons.close_rounded,
-                        color: Color(0xff0972FF),
-                        size: 32,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(children: [
+                      Expanded(
+                        child: Column(children: const [
+                          Icon(
+                            Icons.close_rounded,
+                            color: Color(0xff0972FF),
+                            size: 32,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '1 wins',
+                            style: TextStyle(
+                              fontSize: 14,
+                              decoration: TextDecoration.none,
+                              color: Color(0xff0972FF),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ]),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        '1 wins',
-                        style: TextStyle(
-                          fontSize: 14,
-                          decoration: TextDecoration.none,
-                          color: Color(0xff0972FF),
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Expanded(
+                        child: Column(children: const [
+                          Icon(
+                            Icons.circle_outlined,
+                            color: Color(0xff09FFD6),
+                            size: 32,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '2 wins',
+                            style: TextStyle(
+                              fontSize: 14,
+                              decoration: TextDecoration.none,
+                              color: Color(0xff09FFD6),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ]),
                       ),
+                      Expanded(
+                        child: Column(children: const [
+                          Icon(
+                            Icons.handshake,
+                            size: 32,
+                            color: Color.fromARGB(255, 177, 177, 177),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '2 draws',
+                            style: TextStyle(
+                              fontSize: 14,
+                              decoration: TextDecoration.none,
+                              color: Color(0xff8D8D8D),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ]),
+                      )
                     ]),
-                  ),
-                  Expanded(
-                    child: Column(children: const [
-                      Icon(
-                        Icons.circle_outlined,
-                        color: Color(0xff09FFD6),
-                        size: 32,
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.alarm,
+                            color: Color.fromARGB(255, 193, 193, 193),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TimerLoadingBar(duration: 10),
+                          )
+                        ],
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        '2 wins',
-                        style: TextStyle(
-                          fontSize: 14,
-                          decoration: TextDecoration.none,
-                          color: Color(0xff09FFD6),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ]),
-                  ),
-                  Expanded(
-                    child: Column(children: const [
-                      Icon(
-                        Icons.handshake,
-                        size: 32,
-                        color: Color.fromARGB(255, 177, 177, 177),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '2 draws',
-                        style: TextStyle(
-                          fontSize: 14,
-                          decoration: TextDecoration.none,
-                          color: Color(0xff8D8D8D),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ]),
-                  )
-                ]),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
+          const SizedBox(height: 30),
           FractionallySizedBox(
             widthFactor: 0.9,
             child: GridView.count(
@@ -130,17 +153,13 @@ class Game extends StatelessWidget {
                             color: Color(0xff09FFD6),
                             size: 48,
                           ),
-                    // child: Text(
-                    //   '$index',
-                    //   style: const TextStyle(fontSize: 18),
-                    // ),
                   ),
                 );
               }),
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(2),
@@ -158,7 +177,7 @@ class Game extends StatelessWidget {
                         decoration: BoxDecoration(
                           border: Border.all(
                               width: 1.0,
-                              color: const Color.fromARGB(255, 214, 214, 214)),
+                              color: const Color.fromARGB(255, 230, 230, 230)),
                         ),
                         child: Row(
                           children: [
