@@ -1,8 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:tick_toe_flutter/src/features/game/domain/game.enum.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/timer_loading_bar.dart';
+import 'package:tick_toe_flutter/src/state/game_notifier.dart';
 
-class Game extends StatelessWidget {
-  const Game({Key? key}) : super(key: key);
+import '../../../state/timer_notifier.dart';
+
+class Game extends StatefulWidget {
+  const Game({super.key});
+
+  @override
+  _GameState createState() => _GameState();
+}
+
+class _GameState extends State<Game> {
+  @override
+  void initState() {
+    super.initState();
+    timerNotifier.addListener(() {
+      gameNotifier.changePlayerTurn();
+      _updateComponent();
+    });
+  }
+
+  @override
+  void dispose() {
+    timerNotifier.removeListener(() {});
+    super.dispose();
+  }
+
+  void _updateComponent() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,16 +64,16 @@ class Game extends StatelessWidget {
                   children: [
                     Row(children: [
                       Expanded(
-                        child: Column(children: const [
-                          Icon(
+                        child: Column(children: [
+                          const Icon(
                             Icons.close_rounded,
                             color: Color(0xff0972FF),
                             size: 32,
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
-                            '1 wins',
-                            style: TextStyle(
+                            "${gameNotifier.value.tickWins} wins",
+                            style: const TextStyle(
                               fontSize: 14,
                               decoration: TextDecoration.none,
                               color: Color(0xff0972FF),
@@ -55,16 +83,16 @@ class Game extends StatelessWidget {
                         ]),
                       ),
                       Expanded(
-                        child: Column(children: const [
-                          Icon(
+                        child: Column(children: [
+                          const Icon(
                             Icons.circle_outlined,
                             color: Color(0xff09FFD6),
                             size: 32,
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
-                            '2 wins',
-                            style: TextStyle(
+                            "${gameNotifier.value.tickWins} wins",
+                            style: const TextStyle(
                               fontSize: 14,
                               decoration: TextDecoration.none,
                               color: Color(0xff09FFD6),
@@ -74,16 +102,16 @@ class Game extends StatelessWidget {
                         ]),
                       ),
                       Expanded(
-                        child: Column(children: const [
-                          Icon(
+                        child: Column(children: [
+                          const Icon(
                             Icons.handshake,
                             size: 32,
                             color: Color.fromARGB(255, 177, 177, 177),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
-                            '2 draws',
-                            style: TextStyle(
+                            "${gameNotifier.value.draws} draws",
+                            style: const TextStyle(
                               fontSize: 14,
                               decoration: TextDecoration.none,
                               color: Color(0xff8D8D8D),
@@ -141,18 +169,23 @@ class Game extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                     ),
-                    onPressed: () => {},
-                    child: (index % 2 == 0)
+                    onPressed: () => {
+                      gameNotifier.playMove(index),
+                      _updateComponent(),
+                    },
+                    child: (gameNotifier.value.gameFields[index] == Player.x)
                         ? const Icon(
                             Icons.close_rounded,
                             color: Color(0xff0972FF),
                             size: 48,
                           )
-                        : const Icon(
-                            Icons.circle_outlined,
-                            color: Color(0xff09FFD6),
-                            size: 48,
-                          ),
+                        : (gameNotifier.value.gameFields[index] == Player.o)
+                            ? const Icon(
+                                Icons.circle_outlined,
+                                color: Color(0xff09FFD6),
+                                size: 48,
+                              )
+                            : Container(),
                   ),
                 );
               }),
@@ -181,23 +214,35 @@ class Game extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Container(
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 500),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 3.0, horizontal: 10.0),
-                              color: const Color(0xff0972FF),
-                              child: const Icon(
+                              color: (gameNotifier.value.playerTurn == Player.x)
+                                  ? const Color(0xff0972FF)
+                                  : Colors.white,
+                              child: Icon(
                                 Icons.close_rounded,
-                                color: Colors.white,
+                                color:
+                                    (gameNotifier.value.playerTurn == Player.x)
+                                        ? Colors.white
+                                        : const Color(0xff0972FF),
                                 size: 32,
                               ),
                             ),
-                            Container(
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 500),
                               padding: const EdgeInsets.symmetric(
                                   vertical: 3.0, horizontal: 10.0),
-                              color: Colors.white,
-                              child: const Icon(
+                              color: (gameNotifier.value.playerTurn == Player.o)
+                                  ? const Color(0xff09FFD6)
+                                  : Colors.white,
+                              child: Icon(
                                 Icons.circle_outlined,
-                                color: Color(0xff09FFD6),
+                                color:
+                                    (gameNotifier.value.playerTurn == Player.o)
+                                        ? Colors.white
+                                        : const Color(0xff09FFD6),
                                 size: 32,
                               ),
                             ),
@@ -226,7 +271,10 @@ class Game extends StatelessWidget {
                         ),
                         padding: const EdgeInsets.all(5),
                         child: IconButton(
-                          onPressed: () => {},
+                          onPressed: () => {
+                            gameNotifier.resetGame(),
+                            _updateComponent(),
+                          },
                           icon: const Icon(Icons.refresh),
                           iconSize: 36,
                           color: Colors.white,

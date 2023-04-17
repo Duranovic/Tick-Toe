@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tick_toe_flutter/src/state/game_notifier.dart';
+
+import '../../../state/timer_notifier.dart';
 
 class TimerLoadingBar extends StatefulWidget {
   final int duration;
@@ -14,6 +17,11 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
   late AnimationController _controller;
   late Animation<double> _animation;
 
+  void resetTimer() {
+    _controller.reset();
+    _controller.forward();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -28,13 +36,27 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
     ).drive(Tween<double>(begin: 0.0, end: 1.0));
 
     _animation.addListener(() {
-      setState(() {});
+      setState(() {
+        // gameNotifier.value.timerValue = _animation.value;
+      });
+    });
+
+    _animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        timerNotifier.restartTimer();
+        resetTimer();
+      }
+    });
+
+    timerNotifier.addListener(() {
+      resetTimer();
     });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    timerNotifier.removeListener(() {});
     super.dispose();
   }
 
