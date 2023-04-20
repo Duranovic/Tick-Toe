@@ -1,8 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:tick_toe_flutter/src/features/game/domain/game.enum.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/restart_game_dialog.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/timer_loading_bar.dart';
 import 'package:tick_toe_flutter/src/state/game_notifier.dart';
-
 import '../../../state/timer_notifier.dart';
 
 class Game extends StatefulWidget {
@@ -272,8 +274,11 @@ class _GameState extends State<Game> {
                         padding: const EdgeInsets.all(5),
                         child: IconButton(
                           onPressed: () => {
-                            gameNotifier.resetGame(),
-                            _updateComponent(),
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return const RestartGameDialog();
+                                }),
                           },
                           icon: const Icon(Icons.refresh),
                           iconSize: 36,
