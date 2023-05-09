@@ -1,7 +1,6 @@
 import 'game.enum.dart';
 
 class GameState {
-  // late List<Player?> gameFields;
   late List<List<Player?>> gameFields;
   late Player playerTurn;
   late int tickWins;

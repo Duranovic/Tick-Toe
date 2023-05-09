@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tick_toe_flutter/src/state/game_notifier.dart';
-
 import '../../../state/timer_notifier.dart';
 
 class TimerLoadingBar extends StatefulWidget {
