@@ -1,10 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:tick_toe_flutter/src/features/game/domain/game.enum.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/end_game_dialog.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/restart_game_dialog.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/timer_loading_bar.dart';
 import 'package:tick_toe_flutter/src/state/game_notifier.dart';
+import 'package:tick_toe_flutter/src/state/wins_notifier.dart';
 import '../../../state/timer_notifier.dart';
 
 class Game extends StatefulWidget {
@@ -22,11 +22,20 @@ class _GameState extends State<Game> {
       gameNotifier.changePlayerTurn();
       _updateComponent();
     });
+    winsNotifier.addListener(() {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const EndGameDialog();
+          });
+      print("TEST");
+    });
   }
 
   @override
   void dispose() {
     timerNotifier.removeListener(() {});
+    winsNotifier.removeListener(() {});
     super.dispose();
   }
 
@@ -93,7 +102,7 @@ class _GameState extends State<Game> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            "${gameNotifier.value.tickWins} wins",
+                            "${gameNotifier.value.toeWins} wins",
                             style: const TextStyle(
                               fontSize: 14,
                               decoration: TextDecoration.none,
@@ -147,12 +156,17 @@ class _GameState extends State<Game> {
           const SizedBox(height: 30),
           FractionallySizedBox(
             widthFactor: 0.9,
-            child: GridView.count(
-              crossAxisCount: 3,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15,
+            child: GridView.builder(
+              itemCount: 9,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+              ),
               shrinkWrap: true,
-              children: List.generate(9, (index) {
+              itemBuilder: (BuildContext context, int index) {
+                int row = index ~/ 3;
+                int col = index % 3;
                 return Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -172,16 +186,16 @@ class _GameState extends State<Game> {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () => {
-                      gameNotifier.playMove(index),
+                      gameNotifier.playMove(row, col),
                       _updateComponent(),
                     },
-                    child: (gameNotifier.value.gameFields[index] == Player.x)
+                    child: (gameNotifier.value.gameFields[row][col] == Player.x)
                         ? const Icon(
                             Icons.close_rounded,
                             color: Color(0xff0972FF),
                             size: 48,
                           )
-                        : (gameNotifier.value.gameFields[index] == Player.o)
+                        : (gameNotifier.value.gameFields[row][col] == Player.o)
                             ? const Icon(
                                 Icons.circle_outlined,
                                 color: Color(0xff09FFD6),
@@ -190,7 +204,7 @@ class _GameState extends State<Game> {
                             : Container(),
                   ),
                 );
-              }),
+              },
             ),
           ),
           Expanded(
