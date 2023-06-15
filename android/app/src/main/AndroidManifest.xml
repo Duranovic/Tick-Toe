@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tick_toe_flutter">
+    package="com.example.tick_toe">
    <application
-        android:label="tick_toe_flutter"
+        android:label="tick_toe"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
