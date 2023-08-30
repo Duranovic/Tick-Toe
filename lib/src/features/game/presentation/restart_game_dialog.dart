@@ -1,13 +1,19 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-
-import '../../../state/game_notifier.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/cubit/timer_cubit.dart';
+import 'cubit/game_cubit.dart';
 
 class RestartGameDialog extends StatelessWidget {
-  const RestartGameDialog({super.key});
+  final GameCubit gameCubit;
+  final TimerCubit timerCubit;
+
+  const RestartGameDialog(
+      {super.key, required this.gameCubit, required this.timerCubit});
 
   @override
   Widget build(BuildContext context) {
+    timerCubit.pauseTimer();
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -53,7 +59,8 @@ class RestartGameDialog extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      gameNotifier.resetGame();
+                      gameCubit.restartGame();
+                      timerCubit.resetTimer();
                       Navigator.of(context).pop();
                     },
                     child: const Text('Yes. restart the game!'),
@@ -68,7 +75,10 @@ class RestartGameDialog extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    timerCubit.resumeTimer();
+                  },
                   child: const Text('Nope. I wanna continue!'),
                 ),
               ],
