@@ -12,7 +12,7 @@ final router = GoRouter(
     ),
     GoRoute(
       path: "/game",
-      builder: (context, state) => const Game(),
+      builder: (context, state) => Game(),
     )
   ],
 );
