@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tick_toe_flutter/src/features/game/domain/game.enum.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/cubit/game_cubit.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/missed_move_dialog.dart';
 import 'cubit/timer_cubit.dart';
 
 class TimerLoadingBar extends StatefulWidget {
   final TimerCubit timerCubit;
+  final GameCubit gameCubit;
 
-  TimerLoadingBar({required this.timerCubit});
+  TimerLoadingBar({required this.timerCubit, required this.gameCubit});
 
   @override
   _TimerLoadingBarState createState() => _TimerLoadingBarState();
@@ -20,7 +23,13 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
     _controller.forward();
   }
 
+  void timerCompleted() {}
+
   void resetTimer() {
+    _controller.duration = Duration(
+        seconds: widget.timerCubit.state.missedMoveDuration != 0
+            ? widget.timerCubit.state.missedMoveDuration
+            : widget.timerCubit.state.duration);
     _controller.reset();
     _controller.forward();
   }
@@ -40,6 +49,7 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: widget.timerCubit.state.duration),
@@ -48,21 +58,33 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
     _animation = CurvedAnimation(
       parent: _controller,
       curve: Curves.linear,
-    ).drive(Tween<double>(begin: 0.0, end: 1.0));
+    ).drive(Tween<double>(begin: 0.0, end: 1));
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        widget.timerCubit.timerCompleted();
+      }
+    });
 
     _controller.addListener(() {
       setState(() {});
     });
 
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        widget.timerCubit.resetTimer();
-      }
-    });
-
     widget.timerCubit.stream.listen((state) {
       if (state.status == TimerStatus.completed) {
-        _controller.stop();
+        if (state.missedMoveDuration == 0) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return MissedMoveDialog(
+                  timerCubit: widget.timerCubit,
+                  gameCubit: widget.gameCubit,
+                );
+              });
+        } else {
+          widget.timerCubit.resetTimer();
+          widget.timerCubit.resetMissedMoveTime();
+        }
       } else if (state.status == TimerStatus.restarted) {
         resetTimer();
       } else if (state.status == TimerStatus.paused) {
@@ -121,34 +143,6 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
           ],
         );
       }),
-      // child: Stack(
-      //   children: [
-      //     Container(
-      //       decoration: BoxDecoration(
-      //         color: const Color.fromARGB(255, 193, 193, 193).withOpacity(0.2),
-      //         borderRadius: BorderRadius.circular(15.0),
-      //       ),
-      //       width: double.infinity,
-      //       height: double.infinity,
-      //     ),
-      //     Container(
-      //       width: MediaQuery.of(context).size.width * _animation.value,
-      //       decoration: BoxDecoration(
-      //         gradient: const LinearGradient(
-      //           colors: [
-      //             Color(0xFF09FF9D),
-      //             Color(0xFF09FFD6),
-      //             Color(0xFF09DDFF),
-      //           ],
-      //           stops: [0.0, 0.5, 1.0],
-      //           begin: Alignment.centerLeft,
-      //           end: Alignment.centerRight,
-      //         ),
-      //         borderRadius: BorderRadius.circular(15.0),
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }

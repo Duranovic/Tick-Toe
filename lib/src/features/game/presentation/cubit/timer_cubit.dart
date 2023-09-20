@@ -26,6 +26,18 @@ class TimerCubit extends Cubit<TimerState> {
     updateTimerState(TimerStatus.running);
   }
 
+  void setMissedMoveTime() {
+    emit(state.copyWith(
+      missedMoveDuration: state.duration ~/ 2,
+    ));
+  }
+
+  void resetMissedMoveTime() {
+    emit(state.copyWith(
+      missedMoveDuration: 0,
+    ));
+  }
+
   void updateTimerState(newStatus) {
     emit(state.copyWith(
       status: newStatus,

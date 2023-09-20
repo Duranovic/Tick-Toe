@@ -2,6 +2,7 @@ part of 'game_cubit.dart';
 
 class GameState {
   List<List<Player?>> gameFields;
+  Winner? winner;
   Player playerTurn;
   int tickWins;
   int toeWins;
@@ -10,6 +11,7 @@ class GameState {
 
   GameState({
     required this.gameFields,
+    this.winner,
     required this.playerTurn,
     required this.tickWins,
     required this.toeWins,
@@ -19,6 +21,7 @@ class GameState {
 
   GameState copyWith({
     List<List<Player?>>? gameFields,
+    Winner? winner,
     Player? playerTurn,
     int? tickWins,
     int? toeWins,
@@ -27,6 +30,7 @@ class GameState {
   }) {
     return GameState(
       gameFields: gameFields ?? this.gameFields,
+      winner: winner ?? this.winner,
       playerTurn: playerTurn ?? this.playerTurn,
       tickWins: tickWins ?? this.tickWins,
       toeWins: toeWins ?? this.toeWins,

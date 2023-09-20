@@ -16,6 +16,7 @@ class _HeaderState extends State<Header> {
   @override
   Widget build(BuildContext context) {
     final TimerCubit timerCubit = BlocProvider.of<TimerCubit>(context);
+    final GameCubit gameCubit = BlocProvider.of<GameCubit>(context);
 
     return BlocBuilder<GameCubit, GameState>(builder: (context, state) {
       return Flexible(
@@ -111,7 +112,10 @@ class _HeaderState extends State<Header> {
                       ),
                       const SizedBox(width: 8),
                       Expanded(
-                        child: TimerLoadingBar(timerCubit: timerCubit),
+                        child: TimerLoadingBar(
+                          timerCubit: timerCubit,
+                          gameCubit: gameCubit,
+                        ),
                       )
                     ],
                   ),

@@ -10,3 +10,9 @@ enum TimerStatus {
   completed,
   restarted,
 }
+
+enum Winner {
+  x,
+  o,
+  draw,
+}

@@ -7,6 +7,7 @@ class GameCubit extends Cubit<GameState> {
       : super(
           GameState(
             gameFields: [], // Provide initial value for gameFields
+            winner: null,
             playerTurn: Player.x, // Provide initial value for playerTurn
             tickWins: 0, // Provide initial value for tickWins
             toeWins: 0, // Provide initial value for toeWins
@@ -32,15 +33,19 @@ class GameCubit extends Cubit<GameState> {
 
     if (isDraw) {
       state.draws++;
+      state.winner = Winner.draw;
+
       return resetGame();
     }
 
     final winner = checkWinner(newGameFields);
     if (winner == Player.x) {
       state.tickWins++;
+      state.winner = Winner.x;
       return resetGame();
     } else if (winner == Player.o) {
       state.toeWins++;
+      state.winner = Winner.o;
       return resetGame();
     }
 
@@ -59,6 +64,7 @@ class GameCubit extends Cubit<GameState> {
       gameFields: List.generate(3, (_) => List.generate(3, (_) => null)),
       playerTurn: Player.x,
       timerValue: 0.0,
+      winner: null,
     );
 
     // Emit the updated state
