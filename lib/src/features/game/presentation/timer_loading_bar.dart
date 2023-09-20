@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tick_toe_flutter/src/features/game/domain/game.enum.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/cubit/game_cubit.dart';
-import 'package:tick_toe_flutter/src/features/game/presentation/missed_move_dialog.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/missed_move.dart';
+import '../../../shared/presentation/loading_popup_w_content.dart';
 import 'cubit/timer_cubit.dart';
 
 class TimerLoadingBar extends StatefulWidget {
@@ -76,11 +77,10 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
           showDialog(
               context: context,
               builder: (BuildContext context) {
-                return MissedMoveDialog(
-                  timerCubit: widget.timerCubit,
-                  gameCubit: widget.gameCubit,
+                return const LoadingPopupWContent(
+                  contentWidget: MissedMove(),
                 );
-              });
+              }).whenComplete(() => widget.timerCubit.resetTimer());
         } else {
           widget.timerCubit.resetTimer();
           widget.timerCubit.resetMissedMoveTime();
