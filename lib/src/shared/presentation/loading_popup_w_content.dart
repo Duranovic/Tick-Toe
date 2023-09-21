@@ -62,19 +62,21 @@ class _LoadingPopupWContentState extends State<LoadingPopupWContent>
         ),
         // The dialog box
         AlertDialog(
-            alignment: Alignment.bottomCenter,
-            backgroundColor:
-                const Color(0xff001231), // Make the background transparent
-            elevation: 0.0, // Remove the shadow behind the dialog content
-            insetPadding: EdgeInsets.zero,
-            contentPadding: EdgeInsets.zero,
-            shape: const BeveledRectangleBorder(
-              borderRadius: BorderRadius.zero,
-            ),
-            content: LoadingBar(
-              contentWidget: widget.contentWidget,
-              animationValue: _animation.value,
-            )),
+          clipBehavior: Clip.none,
+          alignment: Alignment.bottomCenter,
+          backgroundColor:
+              const Color(0xff001231), // Make the background transparent
+          elevation: 0.0, // Remove the shadow behind the dialog content
+          insetPadding: EdgeInsets.zero,
+          contentPadding: EdgeInsets.zero,
+          shape: const BeveledRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+          content: LoadingBar(
+            contentWidget: widget.contentWidget,
+            animationValue: _animation.value,
+          ),
+        ),
       ],
     );
   }
