@@ -24,13 +24,18 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
     _controller.forward();
   }
 
-  void timerCompleted() {}
-
   void resetTimer() {
-    _controller.duration = Duration(
-        seconds: widget.timerCubit.state.missedMoveDuration != 0
-            ? widget.timerCubit.state.missedMoveDuration
-            : widget.timerCubit.state.duration);
+    widget.timerCubit.resetMissedMoveTime();
+    reset(widget.timerCubit.state.duration);
+  }
+
+  void fastenerResetTimer() {
+    widget.timerCubit.setMissedMoveTime();
+    reset(widget.timerCubit.state.missedMoveDuration);
+  }
+
+  void reset(int duration) {
+    _controller.duration = Duration(seconds: duration);
     _controller.reset();
     _controller.forward();
   }
@@ -45,6 +50,22 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
     if (!_controller.isAnimating) {
       _controller.forward();
     }
+  }
+
+  void renderMissedMove(
+      String? title, String? description, Function? whenComplete) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return LoadingPopupWContent(
+            contentWidget: MissedMove(
+              title: title,
+              description: description,
+            ),
+          );
+        }).whenComplete(
+      () => whenComplete!(),
+    );
   }
 
   @override
@@ -74,19 +95,16 @@ class _TimerLoadingBarState extends State<TimerLoadingBar>
     widget.timerCubit.stream.listen((state) {
       if (state.status == TimerStatus.completed) {
         if (state.missedMoveDuration == 0) {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return const LoadingPopupWContent(
-                  contentWidget: MissedMove(),
-                );
-              }).whenComplete(() => widget.timerCubit.resetTimer());
+          renderMissedMove('Opponent missed the move',
+              "You are one move ahead.", widget.timerCubit.fasterResetTimer);
         } else {
-          widget.timerCubit.resetTimer();
-          widget.timerCubit.resetMissedMoveTime();
+          renderMissedMove('Opponent missed the move',
+              "You are back to the normal flow.", widget.timerCubit.resetTimer);
         }
       } else if (state.status == TimerStatus.restarted) {
         resetTimer();
+      } else if (state.status == TimerStatus.fastener) {
+        fastenerResetTimer();
       } else if (state.status == TimerStatus.paused) {
         pauseAnimation();
       } else if (state.status == TimerStatus.running) {

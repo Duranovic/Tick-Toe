@@ -8,6 +8,7 @@ enum TimerStatus {
   running,
   paused,
   completed,
+  fastener,
   restarted,
 }
 

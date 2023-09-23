@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MissedMove extends StatelessWidget {
-  const MissedMove({super.key});
+  final String? title;
+  final String? description;
+  const MissedMove({super.key, this.title, this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -9,23 +11,23 @@ class MissedMove extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: const [
-        Icon(Icons.warning_rounded,
+      children: [
+        const Icon(Icons.warning_rounded,
             color: Colors.white, size: 30.0), // The warning icon
-        SizedBox(height: 10.0),
+        const SizedBox(height: 10.0),
         Text(
-          "Opponent missed the move.",
+          title ?? 'Missed Move',
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 14.0,
           ),
         ),
-        SizedBox(height: 3.0),
+        const SizedBox(height: 3.0),
         Text(
-          "You are back to the normal flow.",
+          description ?? '',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 14.0, color: Colors.white),
+          style: const TextStyle(fontSize: 14.0, color: Colors.white),
         )
       ],
     );
