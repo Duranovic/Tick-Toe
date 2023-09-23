@@ -1,22 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/end_of_round.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/footer_options.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/footer_player_turn.dart';
+import '../../../shared/presentation/loading_popup_w_content.dart';
+import '../domain/game.enum.dart';
 import 'cubit/game_cubit.dart';
 import 'cubit/timer_cubit.dart';
 import 'game_fields.dart';
 import 'header.dart';
 
-class Game extends StatelessWidget {
+class Game extends StatefulWidget {
   Game({super.key});
 
+  @override
+  _GameState createState() => _GameState();
+}
+
+class _GameState extends State<Game> {
   final GameCubit gameCubit = GameCubit();
   final TimerCubit timerCubit = TimerCubit(
     TimerState(
       duration: 5,
     ),
   );
+
+  @override
+  void initState() {
+    super.initState();
+
+    gameCubit.stream.listen(
+      (state) {
+        if (state.winner != null) {
+          timerCubit.pauseTimer();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return LoadingPopupWContent(
+                contentWidget: EndOfRound(
+                  winner: state.winner ?? Winner.draw,
+                ),
+              );
+            },
+          ).whenComplete(
+              () => {gameCubit.resetGame(), timerCubit.resetTimer()});
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,5 +85,12 @@ class Game extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    gameCubit.close();
+    timerCubit.close();
+    super.dispose();
   }
 }

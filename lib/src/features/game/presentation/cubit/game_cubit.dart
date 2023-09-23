@@ -32,21 +32,27 @@ class GameCubit extends Cubit<GameState> {
     final isDraw = GameCubit.isDraw(newGameFields);
 
     if (isDraw) {
-      state.draws++;
-      state.winner = Winner.draw;
-
-      return resetGame();
+      return emit(
+        state.copyWith(
+          winner: Winner.draw,
+          draws: state.draws + 1,
+        ),
+      );
     }
 
     final winner = checkWinner(newGameFields);
     if (winner == Player.x) {
-      state.tickWins++;
-      state.winner = Winner.x;
-      return resetGame();
+      return emit(state.copyWith(
+        winner: Winner.x,
+        tickWins: state.tickWins + 1,
+      ));
     } else if (winner == Player.o) {
-      state.toeWins++;
-      state.winner = Winner.o;
-      return resetGame();
+      return emit(
+        state.copyWith(
+          winner: Winner.o,
+          toeWins: state.toeWins + 1,
+        ),
+      );
     }
 
     // Create a new instance of the GameState with the updated values
@@ -63,7 +69,6 @@ class GameCubit extends Cubit<GameState> {
     final newState = state.copyWith(
       gameFields: List.generate(3, (_) => List.generate(3, (_) => null)),
       playerTurn: Player.x,
-      timerValue: 0.0,
       winner: null,
     );
 
