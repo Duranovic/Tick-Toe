@@ -32,7 +32,9 @@ class Button extends StatelessWidget {
         ],
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () => {
+          if (onPressed != null) {onPressed!()}
+        },
         style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent, elevation: 0),
         child: Text(

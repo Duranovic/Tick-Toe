@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/end_game_dialog.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/end_of_round.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/footer_options.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/footer_player_turn.dart';
@@ -32,19 +33,32 @@ class _GameState extends State<Game> {
 
     gameCubit.stream.listen(
       (state) {
-        if (state.winner != null) {
+        if (state.roundWinner != null) {
           timerCubit.pauseTimer();
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return LoadingPopupWContent(
                 contentWidget: EndOfRound(
-                  winner: state.winner ?? Winner.draw,
+                  winner: state.roundWinner ?? Winner.draw,
                 ),
               );
             },
           ).whenComplete(
               () => {gameCubit.resetGame(), timerCubit.resetTimer()});
+        }
+
+        if (state.gameWinner != null) {
+          timerCubit.pauseTimer();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return EndGameDialog(
+                gameCubit: gameCubit,
+              );
+            },
+          ).whenComplete(
+              () => {gameCubit.restartGame(), timerCubit.resetTimer()});
         }
       },
     );

@@ -7,11 +7,14 @@ class GameCubit extends Cubit<GameState> {
       : super(
           GameState(
             gameFields: [], // Provide initial value for gameFields
-            winner: null,
+            roundWinner: null,
+            gameWinner: null,
             playerTurn: Player.x, // Provide initial value for playerTurn
             tickWins: 0, // Provide initial value for tickWins
             toeWins: 0, // Provide initial value for toeWins
             draws: 0, // Provide initial value for draws
+            numberOfRounds: 5,
+            currentRound: 1,
             timerValue: 0, // Provide initial value for timerValue
           ),
         ) {
@@ -30,29 +33,40 @@ class GameCubit extends Cubit<GameState> {
 
     // Implement the logic for checking wins, draws, and other game rules
     final isDraw = GameCubit.isDraw(newGameFields);
+    final isLastRound = state.currentRound == state.numberOfRounds;
 
     if (isDraw) {
-      return emit(
+      emit(
         state.copyWith(
-          winner: Winner.draw,
+          roundWinner: isLastRound ? null : Winner.draw,
           draws: state.draws + 1,
+          currentRound: state.currentRound + 1,
         ),
       );
+      checkWinnerOfGame();
+      return;
     }
 
-    final winner = checkWinner(newGameFields);
+    final winner = checkWinnerOfRound(newGameFields);
+
     if (winner == Player.x) {
-      return emit(state.copyWith(
-        winner: Winner.x,
+      emit(state.copyWith(
+        roundWinner: isLastRound ? null : Winner.x,
         tickWins: state.tickWins + 1,
+        currentRound: state.currentRound + 1,
       ));
+      checkWinnerOfGame();
+      return;
     } else if (winner == Player.o) {
-      return emit(
+      emit(
         state.copyWith(
-          winner: Winner.o,
+          roundWinner: isLastRound ? null : Winner.o,
           toeWins: state.toeWins + 1,
+          currentRound: state.currentRound + 1,
         ),
       );
+      checkWinnerOfGame();
+      return;
     }
 
     // Create a new instance of the GameState with the updated values
@@ -69,7 +83,7 @@ class GameCubit extends Cubit<GameState> {
     final newState = state.copyWith(
       gameFields: List.generate(3, (_) => List.generate(3, (_) => null)),
       playerTurn: Player.x,
-      winner: null,
+      roundWinner: null,
     );
 
     // Emit the updated state
@@ -84,13 +98,17 @@ class GameCubit extends Cubit<GameState> {
       tickWins: 0,
       draws: 0,
       toeWins: 0,
+      numberOfRounds: state.numberOfRounds,
+      currentRound: 1,
+      gameWinner: null,
+      roundWinner: null,
     );
 
     // Emit the updated state
     emit(newState);
   }
 
-  static Player? checkWinner(List<List<Player?>> board) {
+  static Player? checkWinnerOfRound(List<List<Player?>> board) {
     // Check rows, columns, and diagonals for a win
     for (int i = 0; i < 3; i++) {
       if (board[i][0] != null &&
@@ -118,6 +136,18 @@ class GameCubit extends Cubit<GameState> {
     }
 
     return null; // No winner
+  }
+
+  void checkWinnerOfGame() {
+    if (state.currentRound <= state.numberOfRounds) return;
+
+    if (state.tickWins > state.toeWins) {
+      return emit(state.copyWith(gameWinner: Winner.x));
+    } else if (state.toeWins > state.tickWins) {
+      return emit(state.copyWith(gameWinner: Winner.o));
+    }
+
+    return emit(state.copyWith(gameWinner: Winner.draw));
   }
 
   static bool isDraw(List<List<Player?>> board) {

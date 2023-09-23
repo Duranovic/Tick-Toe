@@ -11,7 +11,7 @@ class EndOfRound extends StatelessWidget {
         Icons.close,
         size: 40,
         weight: 10,
-        color: Color(0xff09FFD6),
+        color: Color(0xff0972FF),
       );
     } else if (winner == Winner.o) {
       return const Icon(

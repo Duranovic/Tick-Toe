@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../shared/domain/button_variations.dart';
 import '../../../shared/presentation/button.dart';
+import '../domain/game.enum.dart';
 import 'cubit/game_cubit.dart';
 
 class EndGameDialog extends StatefulWidget {
@@ -15,6 +17,16 @@ class EndGameDialog extends StatefulWidget {
 }
 
 class _EndGameDialogState extends State<EndGameDialog> {
+  String getWinnerIcon() {
+    if (widget.gameCubit.state.gameWinner == Winner.x) {
+      return 'assets/images/x.svg';
+    } else if (widget.gameCubit.state.gameWinner == Winner.o) {
+      return 'assets/images/o.svg';
+    }
+
+    return 'assets/images/draw.svg';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -53,7 +65,7 @@ class _EndGameDialogState extends State<EndGameDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SvgPicture.asset(
-                    'assets/images/x.svg',
+                    getWinnerIcon(),
                     width: 45,
                     height: 45,
                   ),
@@ -129,14 +141,20 @@ class _EndGameDialogState extends State<EndGameDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: const [
+                children: [
                   Button(
                     text: "PLAY NEW GAME",
+                    onPressed: () => {
+                      Navigator.of(context).pop(),
+                    },
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   Button(
                     text: "BACK TO HOME",
                     variant: Variant.secondary,
+                    onPressed: () => {
+                      context.go('/'),
+                    },
                   ),
                 ],
               ),
