@@ -15,7 +15,6 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50.0,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(5.0)),
         gradient: LinearGradient(
@@ -36,12 +35,14 @@ class Button extends StatelessWidget {
           if (onPressed != null) {onPressed!()}
         },
         style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent, elevation: 0),
+            padding: const EdgeInsets.all(20),
+            backgroundColor: Colors.transparent,
+            elevation: 0),
         child: Text(
           text,
           style: TextStyle(
             color: Colors.white,
-            fontSize: 15,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             shadows: [
               Shadow(
