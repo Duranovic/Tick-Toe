@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       routerDelegate: router.routerDelegate,
       routeInformationProvider: router.routeInformationProvider,
       routeInformationParser: router.routeInformationParser,
