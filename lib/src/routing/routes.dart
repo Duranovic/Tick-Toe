@@ -1,6 +1,7 @@
 // GoRouter configuration
 import 'package:go_router/go_router.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/game.dart';
+import 'package:tick_toe_flutter/src/features/home/presentation/select_difficulty.dart';
 import 'package:tick_toe_flutter/src/routing/transition_page.dart';
 import '../features/home/presentation/home.dart';
 import '../features/home/presentation/select_mode.dart';
@@ -23,7 +24,17 @@ final router = GoRouter(
               state,
               const SelectMode(),
             ),
-          )
+            routes: [
+              GoRoute(
+                name: 'select-difficulty',
+                path: 'select-difficulty',
+                pageBuilder: (context, state) => getCustomTransitionPage(
+                  state,
+                  const SelectDifficulty(),
+                ),
+              ),
+            ],
+          ),
         ]),
     GoRoute(
       name: 'game',
