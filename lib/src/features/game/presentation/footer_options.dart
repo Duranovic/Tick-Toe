@@ -4,6 +4,7 @@ import 'package:tick_toe_flutter/src/features/game/domain/game.enum.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/cubit/game_cubit.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/cubit/timer_cubit.dart';
 import 'package:tick_toe_flutter/src/features/game/presentation/restart_game_dialog.dart';
+import 'package:tick_toe_flutter/src/features/game/presentation/settings.dart';
 
 class FooterOptions extends StatelessWidget {
   const FooterOptions({super.key});
@@ -102,11 +103,17 @@ class FooterOptions extends StatelessWidget {
               ],
             ),
             child: IconButton(
-              onPressed: () => {},
-              icon: const Icon(Icons.settings),
-              iconSize: 36,
-              color: Colors.white,
-            ),
+                icon: const Icon(Icons.settings),
+                iconSize: 36,
+                color: Colors.white,
+                onPressed: () => {
+                      timerCubit.pauseTimer(),
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const Settings();
+                          }).whenComplete(() => timerCubit.resumeTimer()),
+                    }),
           ),
         ],
       );
